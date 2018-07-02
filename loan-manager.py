@@ -12,11 +12,11 @@ class Application(Frame):
 		Button(self,text="Open file").grid(row=0)
 		for i,loan in enumerate(self.getloans()):
 			Label(self, text=loan.name).grid(row=i+1,column=0)
-			Button(self,text="Edit",command=lambda: self.editloan(loan)).grid(row=i+1,column=1)
+			Button(self,text="Edit",command=lambda loan=loan: self.editloan(loan)).grid(row=i+1,column=1)
 		Button(self,text="New loan",command=self.editloan).grid(row=i+2,column=0)
 	def getloans(self) -> list:
 		# temporary
-		return [Loan("technical debt",100000,1)]
+		return [Loan("technical debt",100000,1),Loan("My house",9999899,10)]
 	def editloan(self,loan=None):
 		""" Open a window for managing a single loan """
 		window = LoanEditWindow(self.master,loan)
