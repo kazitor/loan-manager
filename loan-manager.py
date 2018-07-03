@@ -6,6 +6,8 @@ class Application(Frame):
     def __init__(self, master):
         super(Application, self).__init__(master)
         self.master=master
+        self.master.title("Loan manager")
+        self.master.geometry("400x200")
         self.grid()
         self.add_widgets()
     def add_widgets(self):
@@ -20,7 +22,6 @@ class Application(Frame):
     def editloan(self,loan=None):
         """ Open a window for managing a single loan """
         window = LoanEditWindow(self.master,loan)
-        window.geometry("300x200")
 
 class LoanEditWindow(Toplevel):
     """Window for editing or creating a loan"""
@@ -28,6 +29,7 @@ class LoanEditWindow(Toplevel):
         super(LoanEditWindow, self).__init__(master)
         self.master = master
         self.loan = loan
+        self.geometry("300x200")
         self.grid()
         self.add_widgets()
     def add_widgets(self):
@@ -42,7 +44,5 @@ class LoanEditWindow(Toplevel):
             self.wm_title("Create new loan")
 
 root = Tk()
-root.title("Loan manager")
-root.geometry("400x200")
 app = Application(root)
 root.mainloop()
