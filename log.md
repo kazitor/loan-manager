@@ -1,6 +1,10 @@
 # Blog log
 The task this program is being written for requires a log of progress. It follows, you might be interested in it.
 
+## 2018-07-04
+Did some maths and calculated the formula for amount left after repayments on a compounding loan: total x interest^periods - repayment x interest x (1-interest^periods)/(1-interest)
+Implemented it in the `Loan` class so I don't forget it.
+
 ## 2018-07-02
 
 After some unexpected busyness, I finally made a start on writing today.

@@ -6,6 +6,9 @@ class Loan(object):
         self.total = total
         self.interest = interest
         self.period = period
+    def amountLeft(self,repayment,periods):
+        interest=1+self.interest
+        return self.total*interest**periods - repayment*interest*(1-interest**periods)/(1-interest)
 
 if __name__ == '__main__':
     exit()
