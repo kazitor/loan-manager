@@ -5,7 +5,7 @@ class Loan(object):
         self.name = name
         self.total = total
 
-class CompundLoan(Loan):
+class CompoundLoan(Loan):
     def __init__(self, name, total, interest, period = (1,'y')):
         super().__init__(name,total)
         self.interest = interest
@@ -16,4 +16,3 @@ class CompundLoan(Loan):
 
 if __name__ == '__main__':
     exit()
-
