@@ -1,9 +1,13 @@
 class Loan(object):
     """A single loan"""
     payed=0
-    def __init__(self, name, total, interest, period = (1,'y')):
+    def __init__(self, name, total):
         self.name = name
         self.total = total
+
+class CompundLoan(Loan):
+    def __init__(self, name, total, interest, period = (1,'y')):
+        super().__init__(name,total)
         self.interest = interest
         self.period = period
     def amountLeft(self,repayment,periods):
