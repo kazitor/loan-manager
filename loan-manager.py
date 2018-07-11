@@ -32,24 +32,46 @@ class LoanEditWindow(Toplevel):
 
         self.forcompound = BooleanVar()
         self.forcompound.set( type(loanobject) == loan.CompoundLoan )
-        self.fields=[]
         
         self.geometry("300x200")
         self.grid()
         self.add_widgets()
     def add_widgets(self):
+        self.basefields={}
+        self.extrafields={}
+
+        basefields = {'name':'Name','amount':'Loan total'} # separate to class dict of field objects
+
         Radiobutton(self,text="Simple", variable=self.forcompound, command=self.set_fields, value=False).grid(row=0,column=0)
         Radiobutton(self,text="Compound", variable=self.forcompound, command=self.set_fields, value=True).grid(row=0,column=1)
+        for i,name in enumerate(basefields):
+            labelfield = Label(self,text=basefields[name])
+            labelfield.grid(row=i+1,column=0)
+            entryfield = Entry(self)
+            entryfield.grid(row=i+1,column=1)
+            self.basefields[name] = (labelfield, entryfield)
+
         self.set_fields()
+
         if self.loan:
             self.wm_title("Editing %s" % self.loan.name)
         else:
             self.wm_title("Create new loan")
     def set_fields(self):
-        for i,name in enumerate(('Name','Loan total')):
-            labelfield = Label(self,text=name).grid(row=i+1,column=0)
-            entryfield = Entry(self).grid(row=i+1,column=1)
-            self.fields.append((labelfield, entryfield))
+        for fieldset in self.extrafields:
+            for field in self.extrafields[fieldset]:
+                field.destroy()
+        self.extrafields = {}
+
+        if self.forcompound.get():
+            extrafields = {'interest':'Interest','period':'Period'}
+
+            for i,name in enumerate(extrafields):
+                labelfield = Label(self,text=extrafields[name])
+                labelfield.grid(row=i+3,column=0)
+                entryfield = Entry(self)
+                entryfield.grid(row=i+3,column=1)
+                self.extrafields[name] = (labelfield, entryfield)
 
 root = Tk()
 app = Application(root)
