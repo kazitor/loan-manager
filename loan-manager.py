@@ -40,30 +40,37 @@ class LoanEditWindow(Toplevel):
         self.basefields={}
         self.extrafields={}
 
-        basefields = {'name':'Name','amount':'Loan total'} # separate to class dict of field objects
-
-        Radiobutton(self,text="Simple", variable=self.forcompound, command=self.set_fields, value=False).grid(row=0,column=0)
-        Radiobutton(self,text="Compound", variable=self.forcompound, command=self.set_fields, value=True).grid(row=0,column=1)
-        for i,name in enumerate(basefields, 1):
-            self.addtorow(i,name,basefields[name],self.basefields)
-
-        self.set_fields()
-
         if self.loan:
             self.wm_title("Editing %s" % self.loan.name)
         else:
             self.wm_title("Create new loan")
+
+        Radiobutton(self,text="Simple", variable=self.forcompound, command=self.set_fields, value=False).grid(row=0,column=0)
+        Radiobutton(self,text="Compound", variable=self.forcompound, command=self.set_fields, value=True).grid(row=0,column=1)
+
+        self.addtorow(1,'name','Name',self.basefields, self.loan.name if self.loan else None)
+        self.addtorow(2,'amount','Loan total',self.basefields, self.loan.total if self.loan else None)
+
+        self.set_fields()
+
     def set_fields(self):
         for fieldset in self.extrafields:
             for field in self.extrafields[fieldset]:
                 field.destroy()
         self.extrafields = {}
 
+        endrow=3
         if self.forcompound.get():
-            extrafields = {'interest':'Interest','period':'Period'}
+            endrow=5
+            self.addtorow(3,'interest','Interest rate',self.extrafields, self.loan.interest if self.loan else None)
+            self.addtorow(4,'period','Compound period',self.extrafields, self.loan.period if self.loan else None)
 
-            for i,name in enumerate(extrafields, 3):
-                self.addtorow(i,name,extrafields[name],self.extrafields)
+        savebutton =Button(self,text='Save')
+        savebutton.grid(row=endrow,column=0)
+        cancelbutton =Button(self,text='Cancel')
+        cancelbutton.grid(row=endrow,column=1)
+
+        self.extrafields['buttons'] = (savebutton,cancelbutton) # this is a very bad hack
 
     def addtorow(self,row,name,label,fieldlist=None,content=None):
         '''Adds a label and entry to a particular row'''
@@ -72,7 +79,8 @@ class LoanEditWindow(Toplevel):
         labelfield.grid(row=row,column=0)
         entryfield.grid(row=row,column=1)
         if content:
-            pass # TODO: this
+            entryfield.delete(0, END)
+            entryfield.insert(0, content)
         if fieldlist is not None: # empty dict is falsy
             fieldlist[label] = (labelfield,entryfield)
 
