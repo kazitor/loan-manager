@@ -44,12 +44,8 @@ class LoanEditWindow(Toplevel):
 
         Radiobutton(self,text="Simple", variable=self.forcompound, command=self.set_fields, value=False).grid(row=0,column=0)
         Radiobutton(self,text="Compound", variable=self.forcompound, command=self.set_fields, value=True).grid(row=0,column=1)
-        for i,name in enumerate(basefields):
-            labelfield = Label(self,text=basefields[name])
-            labelfield.grid(row=i+1,column=0)
-            entryfield = Entry(self)
-            entryfield.grid(row=i+1,column=1)
-            self.basefields[name] = (labelfield, entryfield)
+        for i,name in enumerate(basefields, 1):
+            self.addtorow(i,name,basefields[name],self.basefields)
 
         self.set_fields()
 
@@ -66,12 +62,19 @@ class LoanEditWindow(Toplevel):
         if self.forcompound.get():
             extrafields = {'interest':'Interest','period':'Period'}
 
-            for i,name in enumerate(extrafields):
-                labelfield = Label(self,text=extrafields[name])
-                labelfield.grid(row=i+3,column=0)
-                entryfield = Entry(self)
-                entryfield.grid(row=i+3,column=1)
-                self.extrafields[name] = (labelfield, entryfield)
+            for i,name in enumerate(extrafields, 3):
+                self.addtorow(i,name,extrafields[name],self.extrafields)
+
+    def addtorow(self,row,name,label,fieldlist=None,content=None):
+        '''Adds a label and entry to a particular row'''
+        labelfield = Label(self,text=label)
+        entryfield = Entry(self)
+        labelfield.grid(row=row,column=0)
+        entryfield.grid(row=row,column=1)
+        if content:
+            pass # TODO: this
+        if fieldlist is not None: # empty dict is falsy
+            fieldlist[label] = (labelfield,entryfield)
 
 root = Tk()
 app = Application(root)
