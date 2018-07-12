@@ -1,6 +1,19 @@
 # Blog log
 The task this program is being written for requires a log of progress. It follows, you might be interested in it.
 
+## 2018-07-12
+GUI is being painful, unsurprisingly. I had to resolve an issue with the `grid` method not being chainable, i.e. it doesn't return the object it was called on (or anything for that matter).
+
+The GUI should be mostly done now. The edit window will display accurate data when editing a loan and has buttons. I *must* sort out a proper way of storing the fields for manipulating them, the current `dict`-based method is not suitable (though close to a proper, functioning system).
+
+The buttons are currently non-functional, but making them work comes later in the plan. Later the main window should display some additional data. It definitely needs to update the list of existing objects.
+
+I tried to add the fields based on a simple harcoded object, but that doesn't allow for each field's specialties and so has been changed.
+
+Once that's all out of the way, I will get to work on the `Loan` objects. I think I placed "calculation" too soon in my planning, as it's hard to do that without a functioning program. The intention there was just to do some maths soon because that's more interesting or something.
+
+I'm already feeling the technical debt... it's the first sample loan I added for a reason :) Although I feel better about the GUI's state of affairs now.
+
 ## 2018-07-04
 Did some maths and calculated the formula for amount left after repayments on a compounding loan: total x interest^periods - repayment x interest x (1-interest^periods)/(1-interest)
 Implemented it in the `Loan` class so I don't forget it.
