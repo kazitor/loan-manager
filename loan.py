@@ -1,3 +1,11 @@
+import datetime
+
+class Term(object):
+    """Date information of a loan"""
+    def __init__(self, startdate=None, enddate=None):
+        self.startdate = startdate
+        self.enddate = enddate
+
 class Loan(object):
     """A single loan"""
     payed=0
@@ -6,6 +14,7 @@ class Loan(object):
         self.total = total
 
 class CompoundLoan(Loan):
+    """Loan that undergoes compound interest"""
     def __init__(self, name, total, interest, period = (1,'y')):
         super().__init__(name,total)
         self.interest = interest
