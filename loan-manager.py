@@ -62,8 +62,8 @@ class LoanEditWindow(Toplevel):
         endrow=3
         if self.forcompound.get():
             endrow=5
-            self.addtorow(3,'interest','Interest rate',self.extrafields, self.loan.interest if self.loan else None)
-            self.addtorow(4,'period','Compound period',self.extrafields, self.loan.period if self.loan else None)
+            self.addtorow(3,'interest','Interest rate',self.extrafields, self.loan.interest if self.loan and type(self.loan) == loan.CompoundLoan else None)
+            self.addtorow(4,'period','Compound period',self.extrafields, self.loan.period if self.loan and type(self.loan) == loan.CompoundLoan else None)
 
         savebutton =Button(self,text='Save')
         savebutton.grid(row=endrow,column=0)
