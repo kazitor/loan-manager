@@ -1,6 +1,9 @@
 # Blog log
 The task this program is being written for requires a log of progress. It follows, you might be interested in it.
 
+## 2018-07-27
+Rather than passing a bunch of parameters to the `__init__`s of the `Loan` classes, I've started a separate `Term` class to contain the relevant fields. At the moment it just takes a start and end date and copies them, but later it will do validation on those dates and also allow for a compounding period, and possibly also methods for things like next period, time until end, etc.
+
 ## 2018-07-12
 GUI is being painful, unsurprisingly. I had to resolve an issue with the `grid` method not being chainable, i.e. it doesn't return the object it was called on (or anything for that matter).
 
