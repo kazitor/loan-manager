@@ -1,4 +1,5 @@
 from tkinter import *
+import pickle
 import loan
 
 class Application(Frame):
@@ -11,14 +12,23 @@ class Application(Frame):
         self.grid()
         self.add_widgets()
     def add_widgets(self):
-        Button(self,text="Open file").grid(row=0)
-        for i,loan in enumerate(self.getloans()):
-            Label(self, text=loan.name).grid(row=i+1,column=0)
-            Button(self,text="Edit",command=lambda loan=loan: self.editloan(loan)).grid(row=i+1,column=1)
-        Button(self,text="New loan",command=self.editloan).grid(row=i+2,column=0)
+        #Button(self,text="Open file").grid(row=0)
+        Label(self,text="Managed loans").grid(row=0)
+        i = 0 # in case loop is empty
+        for i,loan in enumerate(self.getloans(),1):
+            Label(self, text=loan.name).grid(row=i,column=0)
+            Button(self,text="Edit",command=lambda loan=loan: self.editloan(loan)).grid(row=i,column=1)
+        Button(self,text="New loan",command=self.editloan).grid(row=i+1,column=0)
     def getloans(self) -> list:
-        # temporary
-        return [loan.Loan("technical debt",100000),loan.CompoundLoan("Mortgage",9999899,1,10)]
+        try:
+            with open('loans.dat', 'rb') as f:
+                return [loan.Loan("technical debt",100000),loan.CompoundLoan("Mortgage",9999899,1,10)]
+        except IOError as e:
+            if e.errno == 2: # file not found
+                return []
+            else:
+                raise e
+        
     def editloan(self,loan=None):
         """ Open a window for managing a single loan """
         window = LoanEditWindow(self.master,loan)
