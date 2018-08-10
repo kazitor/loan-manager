@@ -13,7 +13,6 @@ class Application(Frame):
         self.loans = self.loadloans()
         self.add_widgets()
     def add_widgets(self):
-        #Button(self,text="Open file").grid(row=0)
         Label(self,text="Managed loans").grid(row=0)
         i = 0 # in case loop is empty
         for i,loan in enumerate(self.loans,1):
@@ -24,7 +23,6 @@ class Application(Frame):
         try:
             with open('loans.dat', 'rb') as f:
                 return pickle.load(f)
-                #return [loan.Loan("technical debt",100000),loan.CompoundLoan("Mortgage",9999899,1,10)]
         except IOError as e:
             if e.errno == 2: # file does not exist
                 return []
@@ -98,7 +96,7 @@ class LoanEditWindow(Toplevel):
         if content:
             entryfield.delete(0, END)
             entryfield.insert(0, content)
-        if fieldlist is not None: # empty dict is falsy
+        if fieldlist is not None: # empty dicts are falsy, must encsure the parameter was not passed
             fieldlist[label] = (labelfield,entryfield)
 
 root = Tk()
