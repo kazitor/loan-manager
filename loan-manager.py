@@ -10,28 +10,35 @@ class Application(Frame):
         self.master.title("Loan manager")
         self.master.geometry("400x200")
         self.grid()
+        self.loans = self.loadloans()
         self.add_widgets()
     def add_widgets(self):
         #Button(self,text="Open file").grid(row=0)
         Label(self,text="Managed loans").grid(row=0)
         i = 0 # in case loop is empty
-        for i,loan in enumerate(self.getloans(),1):
+        for i,loan in enumerate(self.loans,1):
             Label(self, text=loan.name).grid(row=i,column=0)
             Button(self,text="Edit",command=lambda loan=loan: self.editloan(loan)).grid(row=i,column=1)
         Button(self,text="New loan",command=self.editloan).grid(row=i+1,column=0)
-    def getloans(self) -> list:
+    def loadloans(self) -> list:
         try:
             with open('loans.dat', 'rb') as f:
-                return [loan.Loan("technical debt",100000),loan.CompoundLoan("Mortgage",9999899,1,10)]
+                return pickle.load(f)
+                #return [loan.Loan("technical debt",100000),loan.CompoundLoan("Mortgage",9999899,1,10)]
         except IOError as e:
-            if e.errno == 2: # file not found
+            if e.errno == 2: # file does not exist
                 return []
             else:
                 raise e
-        
+    def saveloans(self):
+        with open('loans.dat', 'wb') as f:
+            pickle.dump(self.loans, f)
     def editloan(self,loan=None):
         """ Open a window for managing a single loan """
         window = LoanEditWindow(self.master,loan)
+    def close(self):
+        self.saveloans()
+        self.master.destroy()
 
 class LoanEditWindow(Toplevel):
     """Window for editing or creating a loan"""
@@ -96,4 +103,5 @@ class LoanEditWindow(Toplevel):
 
 root = Tk()
 app = Application(root)
+root.protocol('WM_DELETE_WINDOW', app.close)
 root.mainloop()
