@@ -1,6 +1,12 @@
 # Blog log
 The task this program is being written for requires a log of progress. It follows, you might be interested in it.
 
+## 2018-08-10
+Trying to sort out dates and all their intricacies is something I need time to sort out, so until then it now has the necessary functionality of saving all data on closing and initialising it when next run.
+
+## 2018-08-03
+Began basic implementation of separate objects for tracking interest and periods. They mostly exist just to collect all relevant data in a single object that can be passed as a single parameter. Later `Term` will need to use `Period` to determine dates of individual payments, this is necessary because the `timedelta` object only deals with distinct lengths up to a maximum of days, but fincances typically use varying periods like months or years.
+
 ## 2018-07-27
 Rather than passing a bunch of parameters to the `__init__`s of the `Loan` classes, I've started a separate `Term` class to contain the relevant fields. At the moment it just takes a start and end date and copies them, but later it will do validation on those dates and also allow for a compounding period, and possibly also methods for things like next period, time until end, etc.
 
@@ -36,7 +42,7 @@ Added:
 A brief issue was in the `add_widgets` method, when adding the label and button for each loan. I had something like
 ```python
 for i,loan in enumerate(self.getloans()):
-    Button(self,text="Edit",command=lambda: self.editloan(loan)).grid()
+    Button(self,text="Edit",command=lambda: self.editloan(loan)).grid(
 ```
 
 The issue was that `editloan` was always being called with the last loan. [This Stack Overflow answer](https://stackoverflow.com/questions/16559764/assign-variable-to-local-scope-of-function-in-python#16562246) provided a method of providing a closure for the `loan` variable when the function was created: change it to `lambda loan=loan: self.editloan(loan)`
