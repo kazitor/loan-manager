@@ -8,6 +8,15 @@ class Term(object):
     def timeleft(self):
         return self.enddate - datetime.date.today
 
+class Loan(object):
+    """A single loan"""
+    def __init__(self, name, total):
+        self.payed=0
+        self.name = name
+        self.total = total
+
+# Classes relating to compounding loans
+
 class Interest(object):
     """Interest information of a compound loan"""
     def __init__(self, rate, period, compound_period = None):
@@ -22,13 +31,6 @@ class Period(object):
         self.days = days
         self.months = months
         self.years = years
-
-class Loan(object):
-    """A single loan"""
-    def __init__(self, name, total):
-        self.payed=0
-        self.name = name
-        self.total = total
 
 class CompoundLoan(Loan):
     """Loan that undergoes compound interest"""
