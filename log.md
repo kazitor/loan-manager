@@ -1,6 +1,9 @@
 # Blog log
 The task this program is being written for requires a log of progress. It follows, you might be interested in it.
 
+## 2018-08-18
+Currently working on making the loan objects themselves specify relevant information about themselves (user-friendly name, fields) rather than harcoding it in the main program. Apart from being good practice, I can also easily remove the compounding functionality if time constraints do not allow it. Hopefully it won't get to that point.
+
 ## 2018-08-10
 Trying to sort out dates and all their intricacies is something I need time to sort out, so until then it now has the necessary functionality of saving all data on closing and initialising it when next run.
 
