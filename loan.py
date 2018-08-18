@@ -48,6 +48,8 @@ class CompoundLoan(Loan):
         return self.total*interest**periods - repayment*interest*(1-interest**periods)/(1-interest)
 
 types = (Loan,)
+for i,loan in enumerate(types):
+    loan.id = i
 
 if __name__ == '__main__':
     exit()

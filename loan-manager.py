@@ -43,61 +43,47 @@ class LoanEditWindow(Toplevel):
     def __init__(self, master,loanobject=None):
         super(LoanEditWindow, self).__init__(master)
         self.master = master
-        self.loan = loanobject
+        if loanobject:
+            self.loan = loanobject
+            self.wm_title("Editing %s" % self.loan.name)
+        else:
+            self.loan = loan.types[0]()
+            self.wm_title("Create new loan")
 
         self.loantype = IntVar()
-        self.loantype.set( loan.types.index(type(loanobject)) if loanobject is not None else loan.types[0] )
+        self.loantype.set( self.loan.id )
         
         self.geometry("300x200")
         self.grid()
         self.add_widgets()
     def add_widgets(self):
-        self.basefields={}
-        self.extrafields={}
-
-        if self.loan:
-            self.wm_title("Editing %s" % self.loan.name)
-        else:
-            self.wm_title("Create new loan")
+        self.inputfields=[]
+        self.buttons = (
+            Button(self,text='Save'),
+            Button(self,text='Cancel')
+        ) # add to grid after input fields are added
 
         for i,loantype in enumerate(loan.types):
             Radiobutton(self, text=loantype.title, variable=self.loantype, command=self.set_fields, value=i).grid(row=0,column=i)
 
-        self.addtorow(1,'name','Name',self.basefields, self.loan.name if self.loan else None)
-        self.addtorow(2,'amount','Loan total',self.basefields, self.loan.total if self.loan else None)
-
         self.set_fields()
 
     def set_fields(self):
-        for fieldset in self.extrafields:
-            for field in self.extrafields[fieldset]:
+        for fieldset in self.inputfields:
+            for field in fieldset:
                 field.destroy()
-        self.extrafields = {}
+        self.inputfields.clear()
 
-        endrow=3
-        if self.forcompound.get():
-            endrow=5
-            self.addtorow(3,'interest','Interest rate',self.extrafields, self.loan.interest if self.loan and type(self.loan) == loan.CompoundLoan else None)
-            self.addtorow(4,'period','Compound period',self.extrafields, self.loan.period if self.loan and type(self.loan) == loan.CompoundLoan else None)
+        for row, label in enumerate(loan.types[self.loantype.get()].fields, 1):
+            labelfield = Label(self,text=label)
+            entryfield = Entry(self)
+            # entryfield.insert(0, content)
+            labelfield.grid(row=row, column=0)
+            entryfield.grid(row=row,column=1)
+            self.inputfields.append((labelfield,entryfield))
 
-        savebutton =Button(self,text='Save')
-        savebutton.grid(row=endrow,column=0)
-        cancelbutton =Button(self,text='Cancel')
-        cancelbutton.grid(row=endrow,column=1)
-
-        self.extrafields['buttons'] = (savebutton,cancelbutton) # this is a very bad hack
-
-    def addtorow(self,row,name,label,fieldlist=None,content=None):
-        '''Adds a label and entry to a particular row'''
-        labelfield = Label(self,text=label)
-        entryfield = Entry(self)
-        labelfield.grid(row=row,column=0)
-        entryfield.grid(row=row,column=1)
-        if content:
-            entryfield.delete(0, END)
-            entryfield.insert(0, content)
-        if fieldlist is not None: # empty dicts are falsy, must encsure the parameter was not passed
-            fieldlist[label] = (labelfield,entryfield)
+        for i,button in enumerate(self.buttons):
+            button.grid(row=row+1, column=i)
 
 root = Tk()
 app = Application(root)
