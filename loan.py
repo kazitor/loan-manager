@@ -10,6 +10,8 @@ class Term(object):
 
 class Loan(object):
     """A single loan"""
+    title = 'Simple'
+    fields = ('Name', 'Total', 'Payed')
     def __init__(self, name, total):
         self.payed=0
         self.name = name
@@ -34,6 +36,7 @@ class Period(object):
 
 class CompoundLoan(Loan):
     """Loan that undergoes compound interest"""
+    title = 'Compounding'
     def __init__(self, name, total, interest):
         super().__init__(name,total)
         if type(interest) != Interest:
@@ -43,6 +46,8 @@ class CompoundLoan(Loan):
         return None
         interest=1+self.interest
         return self.total*interest**periods - repayment*interest*(1-interest**periods)/(1-interest)
+
+types = (Loan,)
 
 if __name__ == '__main__':
     exit()

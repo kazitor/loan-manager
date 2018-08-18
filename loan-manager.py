@@ -45,8 +45,8 @@ class LoanEditWindow(Toplevel):
         self.master = master
         self.loan = loanobject
 
-        self.forcompound = BooleanVar()
-        self.forcompound.set( type(loanobject) == loan.CompoundLoan )
+        self.loantype = IntVar()
+        self.loantype.set( loan.types.index(type(loanobject)) if loanobject is not None else loan.types[0] )
         
         self.geometry("300x200")
         self.grid()
@@ -60,8 +60,8 @@ class LoanEditWindow(Toplevel):
         else:
             self.wm_title("Create new loan")
 
-        Radiobutton(self,text="Simple", variable=self.forcompound, command=self.set_fields, value=False).grid(row=0,column=0)
-        Radiobutton(self,text="Compound", variable=self.forcompound, command=self.set_fields, value=True).grid(row=0,column=1)
+        for i,loantype in enumerate(loan.types):
+            Radiobutton(self, text=loantype.title, variable=self.loantype, command=self.set_fields, value=i).grid(row=0,column=i)
 
         self.addtorow(1,'name','Name',self.basefields, self.loan.name if self.loan else None)
         self.addtorow(2,'amount','Loan total',self.basefields, self.loan.total if self.loan else None)
