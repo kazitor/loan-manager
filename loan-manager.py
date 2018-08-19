@@ -56,11 +56,12 @@ class LoanEditWindow(Toplevel):
         self.geometry("300x200")
         self.grid()
         self.add_widgets()
+
     def add_widgets(self):
         self.inputfields=[]
         self.buttons = (
-            Button(self,text='Save'),
-            Button(self,text='Cancel')
+            Button(self,text='Save',command=self.save),
+            Button(self,text='Cancel',command=self.destroy)
         ) # add to grid after input fields are added
 
         for i,loantype in enumerate(loan.types):
@@ -84,6 +85,9 @@ class LoanEditWindow(Toplevel):
 
         for i,button in enumerate(self.buttons):
             button.grid(row=row+1, column=i)
+
+    def save(self):
+        pass
 
 root = Tk()
 app = Application(root)
