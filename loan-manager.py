@@ -11,17 +11,33 @@ class Application(Frame):
         self.master.title("Loan manager")
         self.master.geometry("400x200")
         self.grid()
-        self.loans = self.loadloans()
+
         self.add_widgets()
 
     def add_widgets(self):
         Label(self,text="Managed loans").grid(row=0)
+        self.loanfields=[]
+        self.new_button = Button(self,text="New loan",command=self.editloan)
+        self.listloans()
+
+    def listloans(self):
+        for fieldset in self.loanfields:
+            for widget in fieldset:
+                widget.destroy()
+        self.loanfields.clear()
+
+        self.loans = self.loadloans()
         row = 0 # in case loop is empty
         for i,loan in enumerate(self.loans):
             row = i + 1
-            Label(self, text=loan.name).grid(row=row,column=0)
-            Button(self,text="Edit",command=lambda loanno=i: self.editloan(loanno)).grid(row=row,column=1)
-        Button(self,text="New loan",command=self.editloan).grid(row=row+1,column=0)
+            labelfield = Label(self, text=loan.name)
+            labelfield.grid(row=row,column=0)
+            editbutton = Button(self,text="Edit",command=lambda loanno=i: self.editloan(loanno))
+            editbutton.grid(row=row,column=1)
+
+            self.loanfields.append((labelfield,editbutton))
+
+        self.new_button.grid(row=row+1,column=0)
 
     def editloan(self,loanno=None):
         """ Open a window for managing a single loan """
@@ -31,6 +47,8 @@ class Application(Frame):
                 self.loans.append(window.newloan)
             else:
                 self.loans[loanno] = window.newloan
+            self.saveloans()
+            self.listloans()
 
     def loadloans(self) -> list:
         try:
@@ -77,7 +95,7 @@ class LoanEditWindow(Toplevel):
         self.bind('<Escape>', self.close)
 
         self.wait_window(self)
-        
+
     def add_widgets(self):
         self.inputfields=[]
         self.buttons = (
