@@ -13,7 +13,7 @@ class Loan(object):
     title = 'Simple'
     fields = ('Name', 'Total', 'Paid')
 
-    def __new__(cls, name, total, paid=0):
+    def __new__(cls, name=None, total=0, paid=0):
         if paid > total:
             raise ValueError("Cannot pay off more than the total amount")
         return super().__new__(cls)
@@ -23,9 +23,16 @@ class Loan(object):
         self.name = name
         self.total = total
 
+    def __str__(self):
+        return '{0.name}: ${0.total}, {0.progress}% paid'.format(self)
+
     @property
     def left(self):
         return self.total - self.paid
+
+    @property
+    def progress(self):
+        return self.paid / self.total
 
 # Classes relating to compounding loans
 
