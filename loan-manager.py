@@ -1,4 +1,5 @@
 from tkinter import *
+from tkinter import messagebox # you tell me why this necessary
 import pickle
 import loan
 
@@ -46,12 +47,13 @@ class LoanEditWindow(Toplevel):
         self.transient(master)
 
         self.master = master
-        self.loan = loanobject
+        self.oldloan = loanobject
+        self.newloan = None
         self.loantype = IntVar()
 
-        if self.loan:
-            self.wm_title("Editing %s" % self.loan.name)
-            self.loantype.set( self.loan.id )
+        if self.oldloan:
+            self.wm_title("Editing %s" % self.oldloan.name)
+            self.loantype.set( self.oldloan.id )
         else:
             self.wm_title("Create new loan")
         
@@ -95,7 +97,13 @@ class LoanEditWindow(Toplevel):
             button.grid(row=row+1, column=i)
 
     def save(self, event=None):
-        self.close()
+        values = [entry.get() for label, entry in self.inputfields]
+        try:
+            self.newloan = loan.by_id(self.loantype.get())(*values) # pass values sequentially into loan constructor
+        except ValueError as e:
+            messagebox.showerror("Invalid values",e)
+        else:
+            self.close()
 
     def close(self, event=None):
         self.master.focus_set()

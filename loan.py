@@ -14,9 +14,12 @@ class Loan(object):
     fields = ('Name', 'Total', 'Paid')
 
     def __init__(self, name, total, paid=0):
+        paid = float(paid)
+        total = float(total)
+        
         if paid > total:
             raise ValueError("Cannot pay off more than the total amount")
-            
+
         self.paid = paid
         self.name = name
         self.total = total
