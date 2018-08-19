@@ -30,12 +30,14 @@ class Application(Frame):
         row = 0 # in case loop is empty
         for i,loan in enumerate(self.loans):
             row = i + 1
-            labelfield = Label(self, text=loan.name)
+            labelfield   = Label(self, text=loan.name)
+            editbutton   = Button(self,text="Edit",  command=lambda loanno=i: self.editloan(loanno))
+            deletebutton = Button(self,text="Delete",command=lambda loanno=i: self.deleteloan(loanno))
             labelfield.grid(row=row,column=0)
-            editbutton = Button(self,text="Edit",command=lambda loanno=i: self.editloan(loanno))
             editbutton.grid(row=row,column=1)
+            deletebutton.grid(row=row,column=2)
 
-            self.loanfields.append((labelfield,editbutton))
+            self.loanfields.append((labelfield,editbutton,deletebutton))
 
         self.new_button.grid(row=row+1,column=0)
 
@@ -49,6 +51,11 @@ class Application(Frame):
                 self.loans[loanno] = window.newloan
             self.saveloans()
             self.listloans()
+
+    def deleteloan(self, loanno=None):
+        self.loans.pop(loanno) # pop is by index, remove is by value
+        self.saveloans()
+        self.listloans()
 
     def loadloans(self) -> list:
         try:
