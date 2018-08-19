@@ -35,7 +35,7 @@ class Application(Frame):
             pickle.dump(self.loans, f)
     def editloan(self,loanno=None):
         """ Open a window for managing a single loan """
-        window = LoanEditWindow(self.master,self.loans[loanno] if loanno else None)
+        window = LoanEditWindow(self.master,self.loans[loanno] if loanno is not None else None)
         if window.newloan:
             if loanno is None:
                 self.loans.append(window.newloan)
