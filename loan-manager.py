@@ -63,10 +63,11 @@ class LoanEditWindow(Toplevel):
         self.bind('<Return>', self.save)
         self.bind('<Escape>', self.close)
 
+        self.wait_window(self)
     def add_widgets(self):
         self.inputfields=[]
         self.buttons = (
-            Button(self,text='Save',command=self.save),
+            Button(self,text='Save',command=self.save, default=ACTIVE),
             Button(self,text='Cancel',command=self.close)
         ) # add to grid after input fields are added
 
