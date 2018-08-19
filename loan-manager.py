@@ -42,6 +42,8 @@ class LoanEditWindow(Toplevel):
     """Window for editing or creating a loan"""
     def __init__(self, master,loanobject=None):
         super(LoanEditWindow, self).__init__(master)
+        self.transient(master)
+
         self.master = master
         self.loan = loanobject
         self.loantype = IntVar()
@@ -53,14 +55,19 @@ class LoanEditWindow(Toplevel):
             self.wm_title("Create new loan")
         
         self.geometry("300x200")
+        self.focus_set()
+        self.grab_set()
         self.grid()
         self.add_widgets()
+
+        self.bind('<Return>', self.save)
+        self.bind('<Escape>', self.close)
 
     def add_widgets(self):
         self.inputfields=[]
         self.buttons = (
             Button(self,text='Save',command=self.save),
-            Button(self,text='Cancel',command=self.destroy)
+            Button(self,text='Cancel',command=self.close)
         ) # add to grid after input fields are added
 
         for i,loantype in enumerate(loan.types):
@@ -85,8 +92,12 @@ class LoanEditWindow(Toplevel):
         for i,button in enumerate(self.buttons):
             button.grid(row=row+1, column=i)
 
-    def save(self):
-        pass
+    def save(self, event=None):
+        self.close()
+
+    def close(self, event=None):
+        self.master.focus_set()
+        self.destroy()
 
 root = Tk()
 app = Application(root)
