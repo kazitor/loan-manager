@@ -1,6 +1,15 @@
 # Blog log
 The task this program is being written for requires a log of progress. It follows, you might be interested in it.
 
+## 2018-08-19
+Found a [good article](http://effbot.org/tkinterbook/tkinter-dialog-windows.htm) about making dialog boxes with tkinter and implemented a bunch of that functionality, such as responding to "Escape" and preventing interaction with the parent window.
+
+I made excellent progress today towards having a properly functional program as it is now possible to freely enter data and have it saved then read the next time the program is run.
+
+I'm starting to realise that doing anything involving dates was not too wise: still need to sort out the `Term` thing, but a date picker might also be necessary. I'd hoped that the default `datetime` module would make it all fairly painless, but that's turning out not the case.
+
+However, having had a look at my original specification ("The user will be able to enter various items that need repaying, and be informed how long they will take to pay off and how much that will cost."), I do have a somewhat clearer idea of what really needs to be done and thus how I could end up not doing any date stuff at all if necessary.
+
 ## 2018-08-18
 Currently working on making the loan objects themselves specify relevant information about themselves (user-friendly name, fields) rather than harcoding it in the main program. Apart from being good practice, I can also easily remove the compounding functionality if time constraints do not allow it. Hopefully it won't get to that point.
 
