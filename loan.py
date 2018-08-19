@@ -13,12 +13,10 @@ class Loan(object):
     title = 'Simple'
     fields = ('Name', 'Total', 'Paid')
 
-    def __new__(cls, name=None, total=0, paid=0):
+    def __init__(self, name, total, paid=0):
         if paid > total:
             raise ValueError("Cannot pay off more than the total amount")
-        return super().__new__(cls)
-
-    def __init__(self, name, total, paid=0):
+            
         self.paid = paid
         self.name = name
         self.total = total
