@@ -51,5 +51,8 @@ types = (Loan,)
 for i,loan in enumerate(types):
     loan.id = i
 
+def by_id(id):
+    return types[id]
+
 if __name__ == '__main__':
     exit()

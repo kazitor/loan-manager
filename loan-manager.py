@@ -34,6 +34,7 @@ class Application(Frame):
     def editloan(self,loan=None):
         """ Open a window for managing a single loan """
         window = LoanEditWindow(self.master,loan)
+        # todo: save
     def close(self):
         self.saveloans()
         self.master.destroy()
@@ -82,7 +83,7 @@ class LoanEditWindow(Toplevel):
                 field.destroy()
         self.inputfields.clear()
 
-        for row, label in enumerate(loan.types[self.loantype.get()].fields, 1):
+        for row, label in enumerate(loan.by_id(self.loantype.get()).fields, 1):
             labelfield = Label(self,text=label)
             entryfield = Entry(self)
             # entryfield.insert(0, content)
