@@ -1,4 +1,5 @@
 from tkinter import *
+from tkinter import messagebox # you tell me why this necessary
 import pickle
 import loan
 
@@ -10,15 +11,45 @@ class Application(Frame):
         self.master.title("Loan manager")
         self.master.geometry("400x200")
         self.grid()
-        self.loans = self.loadloans()
+
         self.add_widgets()
+
     def add_widgets(self):
         Label(self,text="Managed loans").grid(row=0)
-        i = 0 # in case loop is empty
-        for i,loan in enumerate(self.loans,1):
-            Label(self, text=loan.name).grid(row=i,column=0)
-            Button(self,text="Edit",command=lambda loan=loan: self.editloan(loan)).grid(row=i,column=1)
-        Button(self,text="New loan",command=self.editloan).grid(row=i+1,column=0)
+        self.loanfields=[]
+        self.new_button = Button(self,text="New loan",command=self.editloan)
+        self.listloans()
+
+    def listloans(self):
+        for fieldset in self.loanfields:
+            for widget in fieldset:
+                widget.destroy()
+        self.loanfields.clear()
+
+        self.loans = self.loadloans()
+        row = 0 # in case loop is empty
+        for i,loan in enumerate(self.loans):
+            row = i + 1
+            labelfield = Label(self, text=loan.name)
+            labelfield.grid(row=row,column=0)
+            editbutton = Button(self,text="Edit",command=lambda loanno=i: self.editloan(loanno))
+            editbutton.grid(row=row,column=1)
+
+            self.loanfields.append((labelfield,editbutton))
+
+        self.new_button.grid(row=row+1,column=0)
+
+    def editloan(self,loanno=None):
+        """ Open a window for managing a single loan """
+        window = LoanEditWindow(self.master,self.loans[loanno] if loanno is not None else None)
+        if window.newloan:
+            if loanno is None:
+                self.loans.append(window.newloan)
+            else:
+                self.loans[loanno] = window.newloan
+            self.saveloans()
+            self.listloans()
+
     def loadloans(self) -> list:
         try:
             with open('loans.dat', 'rb') as f:
@@ -28,12 +59,11 @@ class Application(Frame):
                 return []
             else:
                 raise e
+
     def saveloans(self):
         with open('loans.dat', 'wb') as f:
             pickle.dump(self.loans, f)
-    def editloan(self,loan=None):
-        """ Open a window for managing a single loan """
-        window = LoanEditWindow(self.master,loan)
+
     def close(self):
         self.saveloans()
         self.master.destroy()
@@ -42,25 +72,35 @@ class LoanEditWindow(Toplevel):
     """Window for editing or creating a loan"""
     def __init__(self, master,loanobject=None):
         super(LoanEditWindow, self).__init__(master)
-        self.master = master
-        if loanobject:
-            self.loan = loanobject
-            self.wm_title("Editing %s" % self.loan.name)
-        else:
-            self.loan = loan.types[0]()
-            self.wm_title("Create new loan")
+        self.transient(master)
 
+        self.master = master
+        self.oldloan = loanobject
+        self.newloan = None
         self.loantype = IntVar()
-        self.loantype.set( self.loan.id )
+
+        if self.oldloan:
+            self.wm_title("Editing %s" % self.oldloan.name)
+            self.loantype.set( self.oldloan.id )
+        else:
+            self.wm_title("Create new loan")
         
         self.geometry("300x200")
+        self.focus_set()
+        self.grab_set()
         self.grid()
         self.add_widgets()
+
+        self.bind('<Return>', self.save)
+        self.bind('<Escape>', self.close)
+
+        self.wait_window(self)
+
     def add_widgets(self):
         self.inputfields=[]
         self.buttons = (
-            Button(self,text='Save'),
-            Button(self,text='Cancel')
+            Button(self,text='Save',command=self.save, default=ACTIVE),
+            Button(self,text='Cancel',command=self.close)
         ) # add to grid after input fields are added
 
         for i,loantype in enumerate(loan.types):
@@ -74,16 +114,34 @@ class LoanEditWindow(Toplevel):
                 field.destroy()
         self.inputfields.clear()
 
-        for row, label in enumerate(loan.types[self.loantype.get()].fields, 1):
+        loanobj = loan.by_id(self.loantype.get())
+        for i in range(len(loanobj.fields)):
+            row = i + 1
+            label = loanobj.fields[i]
+
             labelfield = Label(self,text=label)
             entryfield = Entry(self)
-            # entryfield.insert(0, content)
+            if self.oldloan:
+                entryfield.insert(0, self.oldloan.values[i])
             labelfield.grid(row=row, column=0)
             entryfield.grid(row=row,column=1)
             self.inputfields.append((labelfield,entryfield))
 
         for i,button in enumerate(self.buttons):
             button.grid(row=row+1, column=i)
+
+    def save(self, event=None):
+        values = [entry.get() for label, entry in self.inputfields]
+        try:
+            self.newloan = loan.by_id(self.loantype.get())(*values) # pass values sequentially into loan constructor
+        except ValueError as e:
+            messagebox.showerror("Invalid values",e)
+        else:
+            self.close()
+
+    def close(self, event=None):
+        self.master.focus_set()
+        self.destroy()
 
 root = Tk()
 app = Application(root)
