@@ -15,11 +15,12 @@ class Application(Frame):
         self.add_widgets()
     def add_widgets(self):
         Label(self,text="Managed loans").grid(row=0)
-        i = 0 # in case loop is empty
-        for i,loan in enumerate(self.loans,1):
-            Label(self, text=loan.name).grid(row=i,column=0)
-            Button(self,text="Edit",command=lambda loan=loan: self.editloan(loan)).grid(row=i,column=1)
-        Button(self,text="New loan",command=self.editloan).grid(row=i+1,column=0)
+        row = 0 # in case loop is empty
+        for i,loan in enumerate(self.loans):
+            row = i + 1
+            Label(self, text=loan.name).grid(row=row,column=0)
+            Button(self,text="Edit",command=lambda loanno=i: self.editloan(loanno)).grid(row=row,column=1)
+        Button(self,text="New loan",command=self.editloan).grid(row=row+1,column=0)
     def loadloans(self) -> list:
         try:
             with open('loans.dat', 'rb') as f:
@@ -32,9 +33,14 @@ class Application(Frame):
     def saveloans(self):
         with open('loans.dat', 'wb') as f:
             pickle.dump(self.loans, f)
-    def editloan(self,loan=None):
+    def editloan(self,loanno=None):
         """ Open a window for managing a single loan """
-        window = LoanEditWindow(self.master,loan)
+        window = LoanEditWindow(self.master,self.loans[loanno] if loanno else None)
+        if window.newloan:
+            if loanno is None:
+                self.loans.append(window.newloan)
+            else:
+                self.loans[loanno] = window.newloan
         # todo: save
     def close(self):
         self.saveloans()
@@ -85,10 +91,15 @@ class LoanEditWindow(Toplevel):
                 field.destroy()
         self.inputfields.clear()
 
-        for row, label in enumerate(loan.by_id(self.loantype.get()).fields, 1):
+        loanobj = loan.by_id(self.loantype.get())
+        for i in range(len(loanobj.fields)):
+            row = i + 1
+            label = loanobj.fields[i]
+
             labelfield = Label(self,text=label)
             entryfield = Entry(self)
-            # entryfield.insert(0, content)
+            if self.oldloan:
+                entryfield.insert(0, self.oldloan.values[i])
             labelfield.grid(row=row, column=0)
             entryfield.grid(row=row,column=1)
             self.inputfields.append((labelfield,entryfield))
