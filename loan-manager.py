@@ -13,6 +13,7 @@ class Application(Frame):
         self.grid()
         self.loans = self.loadloans()
         self.add_widgets()
+
     def add_widgets(self):
         Label(self,text="Managed loans").grid(row=0)
         row = 0 # in case loop is empty
@@ -21,6 +22,16 @@ class Application(Frame):
             Label(self, text=loan.name).grid(row=row,column=0)
             Button(self,text="Edit",command=lambda loanno=i: self.editloan(loanno)).grid(row=row,column=1)
         Button(self,text="New loan",command=self.editloan).grid(row=row+1,column=0)
+
+    def editloan(self,loanno=None):
+        """ Open a window for managing a single loan """
+        window = LoanEditWindow(self.master,self.loans[loanno] if loanno is not None else None)
+        if window.newloan:
+            if loanno is None:
+                self.loans.append(window.newloan)
+            else:
+                self.loans[loanno] = window.newloan
+
     def loadloans(self) -> list:
         try:
             with open('loans.dat', 'rb') as f:
@@ -30,18 +41,11 @@ class Application(Frame):
                 return []
             else:
                 raise e
+
     def saveloans(self):
         with open('loans.dat', 'wb') as f:
             pickle.dump(self.loans, f)
-    def editloan(self,loanno=None):
-        """ Open a window for managing a single loan """
-        window = LoanEditWindow(self.master,self.loans[loanno] if loanno is not None else None)
-        if window.newloan:
-            if loanno is None:
-                self.loans.append(window.newloan)
-            else:
-                self.loans[loanno] = window.newloan
-        # todo: save
+
     def close(self):
         self.saveloans()
         self.master.destroy()
@@ -73,6 +77,7 @@ class LoanEditWindow(Toplevel):
         self.bind('<Escape>', self.close)
 
         self.wait_window(self)
+        
     def add_widgets(self):
         self.inputfields=[]
         self.buttons = (
