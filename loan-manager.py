@@ -43,15 +43,14 @@ class LoanEditWindow(Toplevel):
     def __init__(self, master,loanobject=None):
         super(LoanEditWindow, self).__init__(master)
         self.master = master
-        if loanobject:
-            self.loan = loanobject
-            self.wm_title("Editing %s" % self.loan.name)
-        else:
-            self.loan = loan.types[0]()
-            self.wm_title("Create new loan")
-
+        self.loan = loanobject
         self.loantype = IntVar()
-        self.loantype.set( self.loan.id )
+
+        if self.loan:
+            self.wm_title("Editing %s" % self.loan.name)
+            self.loantype.set( self.loan.id )
+        else:
+            self.wm_title("Create new loan")
         
         self.geometry("300x200")
         self.grid()
