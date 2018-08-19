@@ -24,7 +24,7 @@ class Loan(object):
         self.total = total
 
     def __str__(self):
-        return '{0.name}: ${0.total}, {0.progress}% paid'.format(self)
+        return '{0.name}: ${0.total:.2f}, {0.progress:.0%} paid'.format(self)
 
     @property
     def left(self):
