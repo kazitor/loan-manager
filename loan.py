@@ -11,11 +11,21 @@ class Term(object):
 class Loan(object):
     """A single loan"""
     title = 'Simple'
-    fields = ('Name', 'Total', 'Payed')
-    def __init__(self, name, total):
-        self.payed=0
+    fields = ('Name', 'Total', 'Paid')
+
+    def __new__(cls, name, total, paid=0):
+        if paid > total:
+            raise ValueError("Cannot pay off more than the total amount")
+        return super().__new__(cls)
+
+    def __init__(self, name, total, paid=0):
+        self.paid = paid
         self.name = name
         self.total = total
+
+    @property
+    def left(self):
+        return self.total - self.paid
 
 # Classes relating to compounding loans
 
