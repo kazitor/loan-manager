@@ -140,7 +140,7 @@ class LoanEditWindow(Toplevel):
     def save(self, event=None):
         values = [entry.get() for label, entry in self.inputfields]
         try:
-            self.newloan = loan.by_id(self.loantype.get())(*values) # pass values sequentially into loan constructor
+            self.newloan = loan.by_id( self.loantype.get() )(*values) # pass values sequentially into loan constructor
         except ValueError as e:
             messagebox.showerror("Invalid values",e)
         else:
