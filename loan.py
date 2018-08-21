@@ -31,9 +31,9 @@ class Loan(object):
     def values(self):
         return (
             self.name,
-            self.formatMoney(self.total),
             self.formatMoney(self.payment),
             self.formatMoney(self.paid),
+            self.formatMoney(self.total),
         )
 
     @property
@@ -45,14 +45,16 @@ class Loan(object):
 
     @property
     def payoff_time(self):
-        return self.left / self.payment
+        return self.left / self.payment if self.payment else None
     @property
     def payoff_time_nice(self):
-        if self.left > 0:
+        if self.left <= 0:
+            return 'Paid!'
+        elif self.payment == 0:
+            return 'Never'
+        else:
             time_ceil = -(-self.left // self.payment) # fun ceiling trick without importing math
             return '{0:.0f} {1}'.format( time_ceil, 'month' if time_ceil==1 else 'months' )
-        else:
-            return 'Paid!'
 
     @property
     def progress(self):
