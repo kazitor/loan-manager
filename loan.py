@@ -24,7 +24,7 @@ class Loan(object):
 
         if total < 0 or payment < 0 or paid < 0:
             raise ValueError("Values cannot be less than 0")
-            
+
         if paid > total:
             raise ValueError("Cannot pay off more than the total amount")
 
@@ -39,7 +39,12 @@ class Loan(object):
 
     @property
     def values(self):
-        return self.name, self.total, self.payment, self.paid
+        return (
+            self.name,
+            self.formatMoney(self.total),
+            self.formatMoney(self.payment),
+            self.formatMoney(self.paid),
+        )
 
     @property
     def left(self):
@@ -60,6 +65,13 @@ class Loan(object):
         value = round(value, 2)
 
         return value
+
+    @staticmethod
+    def formatMoney(value: float) -> str:
+        if value.is_integer():
+            return '{0:.0f}'.format(value) # don't display cents
+        else:
+            return '{0:.2f}'.format(value)
 
 # Classes relating to compounding loans
 
