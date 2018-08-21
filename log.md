@@ -1,6 +1,18 @@
 # Blog log
 The task this program is being written for requires a log of progress. It follows, you might be interested in it.
 
+## 2018-08-21
+Tried adding an icon; it took some effort to sort out, but it in the end it seems the file needs to be passed to `PhotoImage` first. Unfortunately, since the program is always run through the python interpreter, it is apparently not possible to change the taskbar icon as well.
+
+I finally implemented the important functionality: that of actual calculation. To start off with the basics, it assumes monthly payments (as that is common) and thus will determine how many months it will take. This requires no date manipulation.
+
+Now that it's actually useful and serves a purpose, I can do more on nice features. The only remaining major functionality is to finish implementation of `CompoundLoan` (not so hard now that periods are normalised), the rest really just amounts to general polish.
+
+* Padding, colouring, general visual stuff
+* Stuff with dates, like setting a due date for items
+* Support for opening and saving different files
+* Filtering and sorting on the loan list
+
 ## 2018-08-19
 Found a [good article](http://effbot.org/tkinterbook/tkinter-dialog-windows.htm) about making dialog boxes with tkinter and implemented a bunch of that functionality, such as responding to "Escape" and preventing interaction with the parent window.
 
