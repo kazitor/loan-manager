@@ -11,28 +11,30 @@ class Term(object):
 class Loan(object):
     """A single loan"""
     title = 'Simple'
-    fields = ('Name', 'Total', 'Paid')
+    fields = ('Name', 'Total', 'Monthly payment', 'Paid')
 
-    def __init__(self, name, total, paid=0):
+    def __init__(self, name, total, payment, paid=0):
         if paid == '':
             paid = 0
         else:
-            paid = float(paid)
-        total = float(total)
+            paid = self.parseMoney(paid)
 
+        total = self.parseMoney(total)
         if paid > total:
             raise ValueError("Cannot pay off more than the total amount")
+
+        self.payment = self.parseMoney(payment)
 
         self.paid = paid
         self.name = name
         self.total = total
-
-    @property
-    def values(self):
-        return self.name, self.total, self.paid
     
     def __str__(self):
         return '{0.name}: ${0.total:.2f}, {0.progress:.0%} paid'.format(self)
+
+    @property
+    def values(self):
+        return self.name, self.total, self.payment, self.paid
 
     @property
     def left(self):
@@ -41,6 +43,18 @@ class Loan(object):
     @property
     def progress(self):
         return self.paid / self.total
+
+    @staticmethod
+    def parseMoney(value: str) -> float:
+        original = value
+        value = value.strip('$ ')
+        try:
+            value = float(value)
+        except ValueError as e:
+            raise ValueError(original + " is not a valid amount.") from e # nicer error message
+        value = round(value, 2)
+
+        return value
 
 # Classes relating to compounding loans
 

@@ -65,7 +65,7 @@ class Application(Frame):
             if e.errno == 2: # file does not exist
                 return []
             else:
-                raise e
+                raise
 
     def saveloans(self):
         with open('loans.dat', 'wb') as f:
