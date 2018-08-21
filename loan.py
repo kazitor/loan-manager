@@ -3,9 +3,9 @@ class Loan(object):
     title = 'Simple'
     fields = ('Name', 'Total', 'Monthly payment', 'Paid')
 
-    def __init__(self, name, total, payment, paid=0):
+    def __init__(self, name, total, payment, paid=0.0):
         if paid == '':
-            paid = 0
+            paid = 0.0
         else:
             paid = self.parseMoney(paid)
 
