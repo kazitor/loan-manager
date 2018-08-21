@@ -14,7 +14,10 @@ class Loan(object):
     fields = ('Name', 'Total', 'Paid')
 
     def __init__(self, name, total, paid=0):
-        paid = float(paid)
+        if paid == '':
+            paid = 0
+        else:
+            paid = float(paid)
         total = float(total)
 
         if paid > total:
@@ -28,7 +31,6 @@ class Loan(object):
     def values(self):
         return self.name, self.total, self.paid
     
-
     def __str__(self):
         return '{0.name}: ${0.total:.2f}, {0.progress:.0%} paid'.format(self)
 
