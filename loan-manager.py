@@ -76,10 +76,6 @@ class Application(Frame):
         with open('loans.dat', 'wb') as f:
             pickle.dump(self.loans, f)
 
-    def close(self):
-        self.saveloans()
-        self.master.destroy()
-
 class LoanEditWindow(Toplevel):
     """Window for editing or creating a loan"""
     def __init__(self, master,loanobject=None):
@@ -159,5 +155,4 @@ root = Tk()
 icon = PhotoImage(file='icon.gif')
 root.iconphoto(True, icon)
 app = Application(root)
-root.protocol('WM_DELETE_WINDOW', app.close)
 root.mainloop()
