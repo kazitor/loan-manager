@@ -1,9 +1,9 @@
 class Loan(object):
     """A single loan"""
     title = 'Simple'
-    fields = ('Name', 'Total', 'Monthly payment', 'Paid')
+    fields = ('Name', 'Monthly payment', 'Amount paid', 'Total')
 
-    def __init__(self, name, total, payment, paid=0.0):
+    def __init__(self, name, payment, paid, total):
         if paid == '':
             paid = 0.0
         else:
