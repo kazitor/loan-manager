@@ -20,14 +20,19 @@ class Loan(object):
             paid = self.parseMoney(paid)
 
         total = self.parseMoney(total)
+        payment = self.parseMoney(payment)
+
+        if total < 0 or payment < 0 or paid < 0:
+            raise ValueError("Values cannot be less than 0")
+            
         if paid > total:
             raise ValueError("Cannot pay off more than the total amount")
 
-        self.payment = self.parseMoney(payment)
 
-        self.paid = paid
         self.name = name
         self.total = total
+        self.payment = payment
+        self.paid = paid
     
     def __str__(self):
         return '{0.name}: ${0.total:.2f}, {0.progress:.0%} paid'.format(self)
