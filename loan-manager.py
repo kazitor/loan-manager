@@ -57,7 +57,7 @@ class Application(Frame):
             self.saveloans()
             self.listloans()
 
-    def deleteloan(self, loanno=None):
+    def deleteloan(self, loanno):
         self.loans.pop(loanno) # pop is by index, remove is by value
         self.saveloans()
         self.listloans()
