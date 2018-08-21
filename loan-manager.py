@@ -151,7 +151,8 @@ class LoanEditWindow(Toplevel):
         self.destroy()
 
 root = Tk()
-root.iconphoto(True, PhotoImage(file='icon.gif'))
+icon = PhotoImage(file='icon.gif')
+root.iconphoto(True, icon)
 app = Application(root)
 root.protocol('WM_DELETE_WINDOW', app.close)
 root.mainloop()
