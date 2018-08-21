@@ -33,7 +33,7 @@ class Application(Frame):
             labelfield   = Label(self, text=loan.name)
             editbutton   = Button(self,text="Edit",  command=lambda loanno=i: self.editloan(loanno))
             deletebutton = Button(self,text="Delete",command=lambda loanno=i: self.deleteloan(loanno))
-            labelfield.grid(row=row,column=0)
+            labelfield.grid(row=row,column=0, sticky=E)
             editbutton.grid(row=row,column=1)
             deletebutton.grid(row=row,column=2)
 
@@ -130,7 +130,7 @@ class LoanEditWindow(Toplevel):
             entryfield = Entry(self)
             if self.oldloan:
                 entryfield.insert(0, self.oldloan.values[i])
-            labelfield.grid(row=row, column=0)
+            labelfield.grid(row=row, column=0, sticky=E)
             entryfield.grid(row=row,column=1)
             self.inputfields.append((labelfield,entryfield))
 
