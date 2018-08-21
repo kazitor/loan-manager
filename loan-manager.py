@@ -15,7 +15,9 @@ class Application(Frame):
         self.add_widgets()
 
     def add_widgets(self):
-        Label(self,text="Managed loans").grid(row=0)
+        Label(self,text="Managed loans").grid(row=0,column=0)
+        Label(self,text="Time to pay off").grid(row=0,column=1)
+        Label(self,text="Amount needed").grid(row=0,column=2)
         self.loanfields=[]
         self.new_button = Button(self,text="New loan",command=self.editloan)
         self.listloans()
@@ -30,14 +32,17 @@ class Application(Frame):
         row = 0 # in case loop is empty
         for i,loan in enumerate(self.loans):
             row = i + 1
-            labelfield   = Label(self, text=loan.name)
-            editbutton   = Button(self,text="Edit",  command=lambda loanno=i: self.editloan(loanno))
-            deletebutton = Button(self,text="Delete",command=lambda loanno=i: self.deleteloan(loanno))
-            labelfield.grid(row=row,column=0, sticky=E)
-            editbutton.grid(row=row,column=1)
-            deletebutton.grid(row=row,column=2)
+            fieldset = (
+                Label(self, text=loan.name),
+                Label(self, text=loan.payoff_time_nice),
+                Label(self, text=loan.left_nice),
+                Button(self,text="Edit",  command=lambda loanno=i: self.editloan(loanno)),
+                Button(self,text="Delete",command=lambda loanno=i: self.deleteloan(loanno)),
+            )
+            for col,field in enumerate(fieldset):
+                field.grid(row = row, column = col)
 
-            self.loanfields.append((labelfield,editbutton,deletebutton))
+            self.loanfields.append(fieldset)
 
         self.new_button.grid(row=row+1,column=0)
 

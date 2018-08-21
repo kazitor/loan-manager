@@ -49,6 +49,19 @@ class Loan(object):
     @property
     def left(self):
         return self.total - self.paid
+    @property
+    def left_nice(self):
+        return '$'+self.formatMoney(self.left)
+
+    @property
+    def payoff_time(self):
+        return self.left / self.payment
+    @property
+    def payoff_time_nice(self):
+        if self.left > 0:
+            return '{0:.0f} months'.format( -(-self.left // self.payment)) # fun ceiling trick without importing math
+        else:
+            return 'Paid!'
 
     @property
     def progress(self):
