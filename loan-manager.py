@@ -15,7 +15,9 @@ class Application(Frame):
         self.add_widgets()
 
     def add_widgets(self):
-        Label(self,text="Managed loans").grid(row=0)
+        Label(self,text="Managed loans").grid(row=0,column=0)
+        Label(self,text="Time to pay off").grid(row=0,column=1)
+        Label(self,text="Amount needed").grid(row=0,column=2)
         self.loanfields=[]
         self.new_button = Button(self,text="New loan",command=self.editloan)
         self.listloans()
@@ -30,14 +32,17 @@ class Application(Frame):
         row = 0 # in case loop is empty
         for i,loan in enumerate(self.loans):
             row = i + 1
-            labelfield   = Label(self, text=loan.name)
-            editbutton   = Button(self,text="Edit",  command=lambda loanno=i: self.editloan(loanno))
-            deletebutton = Button(self,text="Delete",command=lambda loanno=i: self.deleteloan(loanno))
-            labelfield.grid(row=row,column=0)
-            editbutton.grid(row=row,column=1)
-            deletebutton.grid(row=row,column=2)
+            fieldset = (
+                Label(self, text=loan.name),
+                Label(self, text=loan.payoff_time_nice),
+                Label(self, text=loan.left_nice),
+                Button(self,text="Edit",  command=lambda loanno=i: self.editloan(loanno)),
+                Button(self,text="Delete",command=lambda loanno=i: self.deleteloan(loanno)),
+            )
+            for col,field in enumerate(fieldset):
+                field.grid(row = row, column = col)
 
-            self.loanfields.append((labelfield,editbutton,deletebutton))
+            self.loanfields.append(fieldset)
 
         self.new_button.grid(row=row+1,column=0)
 
@@ -65,7 +70,7 @@ class Application(Frame):
             if e.errno == 2: # file does not exist
                 return []
             else:
-                raise e
+                raise
 
     def saveloans(self):
         with open('loans.dat', 'wb') as f:
@@ -130,7 +135,7 @@ class LoanEditWindow(Toplevel):
             entryfield = Entry(self)
             if self.oldloan:
                 entryfield.insert(0, self.oldloan.values[i])
-            labelfield.grid(row=row, column=0)
+            labelfield.grid(row=row, column=0, sticky=E)
             entryfield.grid(row=row,column=1)
             self.inputfields.append((labelfield,entryfield))
 
@@ -140,7 +145,7 @@ class LoanEditWindow(Toplevel):
     def save(self, event=None):
         values = [entry.get() for label, entry in self.inputfields]
         try:
-            self.newloan = loan.by_id(self.loantype.get())(*values) # pass values sequentially into loan constructor
+            self.newloan = loan.by_id( self.loantype.get() )(*values) # pass values sequentially into loan constructor
         except ValueError as e:
             messagebox.showerror("Invalid values",e)
         else:
@@ -151,7 +156,8 @@ class LoanEditWindow(Toplevel):
         self.destroy()
 
 root = Tk()
-root.iconphoto(True, PhotoImage(file='icon.gif'))
+icon = PhotoImage(file='icon.gif')
+root.iconphoto(True, icon)
 app = Application(root)
 root.protocol('WM_DELETE_WINDOW', app.close)
 root.mainloop()
