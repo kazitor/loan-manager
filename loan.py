@@ -43,7 +43,9 @@ class Loan(object):
         return self.total - self.paid
     @property
     def left_nice(self):
-        return '$'+self.formatMoney(self.left)
+        if self.left is not None:
+            return '$'+self.formatMoney(self.left)
+        return ''
 
     @property
     def payoff_time(self):
@@ -111,8 +113,10 @@ class CompoundLoan(Loan):
 
     @property
     def left(self):
-        interest = 1 + self.interest
-        return self.total - self.paid
+        time = self.payoff_time
+        if time is None:
+            return None
+        return time * self.payment
 
     @property
     def payoff_time(self):
@@ -121,15 +125,12 @@ class CompoundLoan(Loan):
 
         P, I, R = self.total, 1+self.interest, self.payment
         try:
+            # verfied by maths and GeoGebra
             time = (math.log(R) + math.log(I) - math.log(-(P*I - P - R*I)))/math.log(I)
         except ValueError as e:
-            time = None # repayments not large enough
+            # repayments are not large enough
+            time = None
         return time
-
-    def amountLeft(self,repayment,periods):
-        return None
-        interest=1+self.interest
-        return self.total*interest**periods - repayment*interest*(1-interest**periods)/(1-interest)
 
 types = (Loan, CompoundLoan)
 for i,loan in enumerate(types):
