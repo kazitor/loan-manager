@@ -1,3 +1,5 @@
+import math
+
 class Loan(object):
     """A single loan"""
     title = 'Simple'
@@ -50,7 +52,7 @@ class Loan(object):
     def payoff_time_nice(self):
         if self.left == 0:
             return 'Paid!'
-        elif self.payment == 0:
+        elif self.payoff_time is None:
             return 'Never'
         else:
             time_ceil = -(-self.payoff_time // 1) # fun ceiling trick without importing math
@@ -82,10 +84,10 @@ class Loan(object):
 class CompoundLoan(Loan):
     """Loan that undergoes compound interest"""
     title = 'Compounding'
-    fields = ('Name', 'Monthly payment', 'Monthly interest', 'Amount paid', 'Total')
+    fields = ('Name', 'Monthly payment', 'Monthly interest', 'Amount outstanding')
 
-    def __init__(self, name, payment, interest, paid, total):
-        super().__init__(name, payment, paid, total)
+    def __init__(self, name, payment, interest, total):
+        super().__init__(name, payment, '0', total)
 
         original_interest = interest
         interest = interest.strip('% ')
@@ -104,9 +106,25 @@ class CompoundLoan(Loan):
             self.name,
             self.formatMoney(self.payment),
             str(self.interest * 100),
-            self.formatMoney(self.paid),
             self.formatMoney(self.total),
         )
+
+    @property
+    def left(self):
+        interest = 1 + self.interest
+        return self.total - self.paid
+
+    @property
+    def payoff_time(self):
+        if self.payment == 0:
+            return None
+
+        P, I, R = self.total, 1+self.interest, self.payment
+        try:
+            time = (math.log(R) + math.log(I) - math.log(-(P*I - P - R*I)))/math.log(I)
+        except ValueError as e:
+            time = None # repayments not large enough
+        return time
 
     def amountLeft(self,repayment,periods):
         return None
