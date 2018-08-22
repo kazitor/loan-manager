@@ -33,7 +33,7 @@ class Application(Frame):
         for i,loan in enumerate(self.loans):
             row = i + 1
             fieldset = (
-                Label(self, text=loan.name),
+                Label(self, text=(loan.name[:27] + '...') if len(loan.name) > 30 else loan.name),
                 Label(self, text=loan.payoff_time_nice),
                 Label(self, text=loan.left_nice),
                 Button(self,text="Edit",  command=lambda loanno=i: self.editloan(loanno)),
