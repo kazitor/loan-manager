@@ -82,17 +82,38 @@ class Loan(object):
 class CompoundLoan(Loan):
     """Loan that undergoes compound interest"""
     title = 'Compounding'
-    def __init__(self, name, total, interest):
-        super().__init__(name,total)
-        if type(interest) != Interest:
-            raise TypeError('interest must be an instance of Interest')
-        self.interest = interest
+    fields = ('Name', 'Monthly payment', 'Monthly interest', 'Amount paid', 'Total')
+
+    def __init__(self, name, payment, interest, paid, total):
+        super().__init__(name, payment, paid, total)
+
+        original_interest = interest
+        interest = interest.strip('% ')
+        try:
+            interest = float(interest)
+        except ValueError as e:
+            raise ValueError(original_interest + "is not a valid interest amount.") from e
+        if interest < 0:
+            raise ValueError("Interest cannot be less than 0")
+
+        self.interest = interest / 100
+
+    @property
+    def values(self):
+        return (
+            self.name,
+            self.formatMoney(self.payment),
+            str(self.interest * 100),
+            self.formatMoney(self.paid),
+            self.formatMoney(self.total),
+        )
+
     def amountLeft(self,repayment,periods):
         return None
         interest=1+self.interest
         return self.total*interest**periods - repayment*interest*(1-interest**periods)/(1-interest)
 
-types = (Loan,)
+types = (Loan, CompoundLoan)
 for i,loan in enumerate(types):
     loan.id = i
 
