@@ -1,4 +1,4 @@
 # loan manager
-A tool to calculate repayments for loans
+A tool to calculate repayments for loans, both simple and with compound interest.
 
-The user will be able to enter various items that need repaying, and be informed how long they will take to pay off and how much that will cost.
+You can specifiy how much is owed and how much you intend to repay each month, and determine how much that will cost and how long it will take.
