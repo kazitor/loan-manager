@@ -48,12 +48,12 @@ class Loan(object):
         return self.left / self.payment if self.payment else None
     @property
     def payoff_time_nice(self):
-        if self.left <= 0:
+        if self.left == 0:
             return 'Paid!'
         elif self.payment == 0:
             return 'Never'
         else:
-            time_ceil = -(-self.left // self.payment) # fun ceiling trick without importing math
+            time_ceil = -(-self.payoff_time // 1) # fun ceiling trick without importing math
             return '{0:.0f} {1}'.format( time_ceil, 'month' if time_ceil==1 else 'months' )
 
     @property
