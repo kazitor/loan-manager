@@ -1,3 +1,5 @@
+import math
+
 class Loan(object):
     """A single loan"""
     title = 'Simple'
@@ -14,6 +16,11 @@ class Loan(object):
 
         if total < 0 or payment < 0 or paid < 0:
             raise ValueError("Values cannot be less than 0")
+
+        if total > 1e15 or payment > 1e15:
+            # 1e15 = 1 quadrillion (short) or 1000 billion (long)
+            raise ValueError("There's no way you have that kind of money.")
+            # also it screws up the interface and might not be stored accurately, but nobody needs to know that
 
         if paid > total:
             raise ValueError("Cannot pay off more than the total amount")
@@ -41,7 +48,9 @@ class Loan(object):
         return self.total - self.paid
     @property
     def left_nice(self):
-        return '$'+self.formatMoney(self.left)
+        if self.left is not None:
+            return '$'+self.formatMoney(self.left)
+        return ''
 
     @property
     def payoff_time(self):
@@ -50,7 +59,7 @@ class Loan(object):
     def payoff_time_nice(self):
         if self.left == 0:
             return 'Paid!'
-        elif self.payment == 0:
+        elif self.payoff_time is None:
             return 'Never'
         else:
             time_ceil = -(-self.payoff_time // 1) # fun ceiling trick without importing math
@@ -82,17 +91,53 @@ class Loan(object):
 class CompoundLoan(Loan):
     """Loan that undergoes compound interest"""
     title = 'Compounding'
-    def __init__(self, name, total, interest):
-        super().__init__(name,total)
-        if type(interest) != Interest:
-            raise TypeError('interest must be an instance of Interest')
-        self.interest = interest
-    def amountLeft(self,repayment,periods):
-        return None
-        interest=1+self.interest
-        return self.total*interest**periods - repayment*interest*(1-interest**periods)/(1-interest)
+    fields = ('Name', 'Monthly payment', 'Monthly interest', 'Amount outstanding')
 
-types = (Loan,)
+    def __init__(self, name, payment, interest, total):
+        super().__init__(name, payment, '0', total)
+
+        original_interest = interest
+        interest = interest.strip('% ')
+        try:
+            interest = float(interest)
+        except ValueError as e:
+            raise ValueError(original_interest + "is not a valid interest amount.") from e
+        if interest < 0:
+            raise ValueError("Interest cannot be less than 0")
+
+        self.interest = interest / 100
+
+    @property
+    def values(self):
+        return (
+            self.name,
+            self.formatMoney(self.payment),
+            str(self.interest * 100),
+            self.formatMoney(self.total),
+        )
+
+    @property
+    def left(self):
+        time = self.payoff_time
+        if time is None:
+            return None
+        return time * self.payment
+
+    @property
+    def payoff_time(self):
+        if self.payment == 0:
+            return None
+
+        P, I, R = self.total, 1+self.interest, self.payment
+        try:
+            # verfied by maths and GeoGebra
+            time = (math.log(R) + math.log(I) - math.log(-(P*I - P - R*I)))/math.log(I)
+        except ValueError as e:
+            # repayments are not large enough
+            time = None
+        return time
+
+types = (Loan, CompoundLoan)
 for i,loan in enumerate(types):
     loan.id = i
 

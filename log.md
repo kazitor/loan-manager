@@ -1,6 +1,11 @@
 # Blog log
 The task this program is being written for requires a log of progress. It follows, you might be interested in it.
 
+## 2018-08-22
+Compounding loans succesfully implemented! I had sucessfully done the maths to determine how much would be left at any time, but the program needs the opposite: when the amount left would be 0. Some quick working wasn't very fruitful for working this out, so I used [GeoGebra](http://www.geogebra.org/) to solve it at 0. It involves a lot of logarithms, so I had reason to import `math` and thus use a proper ceiling function too.
+
+When I asked someone else to test the program, they entered an extremely long value that didn't fit in the window properly. So now long names are properly truncated and large values are disallowed so that doesn't happen.
+
 ## 2018-08-21
 Tried adding an icon; it took some effort to sort out, but it in the end it seems the file needs to be passed to `PhotoImage` first. Unfortunately, since the program is always run through the python interpreter, it is apparently not possible to change the taskbar icon as well.
 
