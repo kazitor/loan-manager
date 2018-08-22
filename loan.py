@@ -102,8 +102,8 @@ class CompoundLoan(Loan):
             interest = float(interest)
         except ValueError as e:
             raise ValueError(original_interest + "is not a valid interest amount.") from e
-        if interest < 0:
-            raise ValueError("Interest cannot be less than 0")
+        if interest <= 0:
+            raise ValueError("Interest must be greater than 0")
 
         self.interest = interest / 100
 
