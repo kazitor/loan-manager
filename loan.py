@@ -17,6 +17,11 @@ class Loan(object):
         if total < 0 or payment < 0 or paid < 0:
             raise ValueError("Values cannot be less than 0")
 
+        if total > 1e15 or payment > 1e15:
+            # 1e15 = 1 quadrillion (short) or 1000 billion (long)
+            raise ValueError("There's no way you have that kind of money.")
+            # also it screws up the interface and might not be stored accurately, but nobody needs to know that
+
         if paid > total:
             raise ValueError("Cannot pay off more than the total amount")
 
